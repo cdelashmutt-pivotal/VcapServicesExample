@@ -35,11 +35,24 @@ namespace VcapServicesExample
         {
             var env = new HostingEnvironment(environment);
 
+            //EnvVar load defaults from JSON
+            var envvars = new ConfigurationBuilder()
+                .AddEnvironmentVariables().Build();
+            var envvarDefaults = new ConfigurationBuilder()
+                .AddJsonFile("envvars.json", optional: true, reloadOnChange: false)
+                .Build();
+
+            foreach( var envvarDefault in envvarDefaults.GetChildren())
+            {
+                if (envvars[envvarDefault.Key] == null)
+                {
+                    System.Environment.SetEnvironmentVariable(envvarDefault.Key, envvarDefault.Value);
+                }
+            }
+
             // Set up configuration sources.
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                //.AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-                //.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables()
                 //This is a very important step!
                 .AddCloudFoundry();
