@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
+using Steeltoe.Extensions.Configuration;
 using Steeltoe.Extensions.Configuration.CloudFoundry;
 using PA = Microsoft.Extensions.PlatformAbstractions;
 
@@ -39,7 +40,9 @@ namespace VcapServicesExample
                 .SetBasePath(env.ContentRootPath)
                 //.AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
                 //.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables();
+                .AddEnvironmentVariables()
+                //This is a very important step!
+                .AddCloudFoundry();
 
             Configuration = builder.Build();
 
